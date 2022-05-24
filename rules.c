@@ -111,6 +111,7 @@ static int RuleMatches(const char *Rule, TPortConfig *Config, STREAM *S)
         else if (strcasecmp(RuleType, "host")==0) RetVal=ItemMatches(Host, Match);
         else if (strcasecmp(RuleType, "process")==0) RetVal=ItemMatches(STREAMGetValue(S, "PeerProcess"), Match);
         else if (strcasecmp(RuleType, "user")==0) RetVal=ItemMatches(STREAMGetValue(S, "PeerUser"), Match);
+        else if (strcasecmp(RuleType, "localuser")==0) RetVal=ItemMatches(STREAMGetValue(S, "LocalUser"), Match);
         else if (strcasecmp(RuleType, "dnslist")==0) RetVal=DNSListCheckIP(PeerIP, Match);
         else if (strcasecmp(RuleType, "munauth")==0) RetVal=MunAuthProcess(Config->AuthFile, PeerIP, Match);
         else if (strcasecmp(RuleType, "cert-issuer")==0) RetVal=RuleCertIssuerCheck(S, Match);

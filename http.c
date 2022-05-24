@@ -15,7 +15,6 @@ void TWebSessionDestroy(void *p_Item)
         Destroy(Item->User);
         Destroy(Item->WWWAuthenticate);
         Destroy(Item->ProxyAuthenticate);
-        Destroy(Item->Permits);
         Destroy(Item->Request);
     }
 }

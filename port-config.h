@@ -14,7 +14,7 @@
 #define PORT_AUTH_SSL    64
 #define PORT_TPROXY      256
 #define PORT_NAMESPACES  512
-
+#define PORT_NO_AUTH     1024
 
 
 typedef struct
@@ -37,6 +37,7 @@ int DestTTL;
 int DestTOS;
 int DestMARK;
 int SrcKeepAlive;
+time_t Expire;
 char *Proxy;
 char *SSLLevel;
 char *SSLCert;

@@ -41,8 +41,8 @@ static void WebManagementRegisterHost(TPortConfig *Config, TWebSession *Session)
     char *Button=NULL, *Key=NULL;
 
     WebManagementParseSubmission(Session, &Button, &Key);
-    if ((strcasecmp(Button, "Register IP")==0) && StrValid(Config->IPDB)) ItemDBAdd(Config->IPDB, Session->PeerIP, "allow", GlobalConfig->AuthLifetime);
-    else if ((strcasecmp(Button, "Register MAC")==0) && StrValid(Config->MACDB)) ItemDBAdd(Config->MACDB, Session->PeerMAC, "allow", GlobalConfig->AuthLifetime);
+    if ((strcasecmp(Button, "Register IP")==0) && StrValid(Config->IPDB)) ItemDBAdd(Config->IPDB, Session->PeerIP, "allow", Config->Expire);
+    else if ((strcasecmp(Button, "Register MAC")==0) && StrValid(Config->MACDB)) ItemDBAdd(Config->MACDB, Session->PeerMAC, "allow", Config->Expire);
 
     Destroy(Button);
     Destroy(Key);
@@ -87,24 +87,14 @@ static void WebManagementRegisterHostPage(STREAM *Client, TPortConfig *Config, T
 
 static int WebManagementConfirmConnectionsCheckPermit(const char *Connection, TWebSession *Session)
 {
-    char *Token=NULL, *RemoteIP=NULL;
-    const char *ptr;
+    char *RemoteIP=NULL;
     int RetVal=FALSE;
 
     GetToken(Connection, ":", &RemoteIP, 0);
-    ptr=GetToken(Session->Permits, ",", &Token, 0);
-    while (ptr)
-    {
-        if (strcmp(Token, "confirm-self") == 0)
-        {
-            if (strcmp(RemoteIP, Session->PeerIP)==0) RetVal=TRUE;
-        }
-        else if (strcmp(Token, "confirm-all") == 0) RetVal=TRUE;
-        ptr=GetToken(ptr, ",", &Token, 0);
-    }
+    if ((Session->Permits & PERMIT_CONFIRM_SELF) && (strcmp(RemoteIP, Session->PeerIP)==0)) RetVal=TRUE;
+    if (Session->Permits & PERMIT_CONFIRM_ALL) RetVal=TRUE;
 
     Destroy(RemoteIP);
-    Destroy(Token);
 
     return(RetVal);
 }
@@ -202,8 +192,7 @@ static void WebManagementPeerPage(STREAM *Client, TPortConfig *Config)
 
 static void WebManagementDefaultPage(STREAM *Client, TPortConfig *Config, TWebSession *Session)
 {
-    char *Token=NULL, *Tempstr=NULL;
-    const char *ptr;
+    char *Tempstr=NULL;
 
     STREAMWriteLine("<h1>Munshin Web Interface</h1>\r\n", Client);
     Tempstr=MCopyStr(Tempstr, "<p>Your IP visible to this server is: ", Session->PeerIP, "</p>\r\n", NULL);
@@ -211,18 +200,11 @@ static void WebManagementDefaultPage(STREAM *Client, TPortConfig *Config, TWebSe
     WebManagementRegisterHostPage(Client, Config, Session);
     WebManagementConfirmConnections(Client, Config, Session);
 
-    ptr=GetToken(Session->Permits, ",", &Token, 0);
-    while (ptr)
-    {
-        //if ((strcasecmp(Token, "confirm")==0) && StrValid(Config->ConfirmsDB) ) WebManagementConfirmConnections(Client, Config);
-        if ((strcasecmp(Token, "ipdb")==0) && StrValid(Config->IPDB)) ItemDBAdd(Config->IPDB, Session->PeerIP, "allow", GlobalConfig->AuthLifetime);
-        if ((strcasecmp(Token, "macdb")==0) && StrValid(Config->MACDB)) ItemDBAdd(Config->MACDB, Session->PeerMAC, "allow", GlobalConfig->AuthLifetime);
-
-        ptr=GetToken(ptr, ",", &Token, 0);
-    }
+    //if ((strcasecmp(Token, "confirm")==0) && StrValid(Config->ConfirmsDB) ) WebManagementConfirmConnections(Client, Config);
+    if ((Session->Permits & PERMIT_REGISTER_IP) && StrValid(Config->IPDB)) ItemDBAdd(Config->IPDB, Session->PeerIP, "allow", Config->Expire);
+    if ((Session->Permits & PERMIT_REGISTER_MAC) && StrValid(Config->MACDB)) ItemDBAdd(Config->MACDB, Session->PeerMAC, "allow", Config->Expire);
 
     Destroy(Tempstr);
-    Destroy(Token);
 }
 
 static void WebManagementConfirmedPage(STREAM *Client)
@@ -350,13 +332,6 @@ static void WebManagementWebpages(STREAM *Client, TPortConfig *Config, TWebSessi
         WebManagementDefaultPage(Client, Config, Session);
         STREAMWriteLine("</form></body></html>\r\n", Client);
     }
-//  WebManagementConfirmedPage(Client);
-
-    ptr=GetToken(Session->Permits, ",", &Token, 0);
-    while (ptr)
-    {
-        ptr=GetToken(ptr, ",", &Token, 0);
-    }
 
 
     if (StrValid(Config->Script))
@@ -375,8 +350,8 @@ void WebManagementProcess(STREAM *Client, TPortConfig *Config)
 {
     TWebSession *Session;
 
-    if (! StrValid(Config->AuthFile))
-        Session=HttpAuth(Client, Config, FALSE);
+    if (! StrValid(Config->AuthFile)) Session=HttpAuth(Client, Config, FALSE);
+
     if (Session)
     {
         WebManagementWebpages(Client, Config, Session);

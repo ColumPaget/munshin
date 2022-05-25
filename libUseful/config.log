@@ -300,7 +300,7 @@ configure:3970: result: yes
 configure:3988: checking for htonll in -lc
 configure:4013: gcc -o conftest -g -O2   conftest.c -lc  -lc -lc -lc -lc -lc -lc -lc -lc  >&5
 /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: DWARF error: can't find .debug_ranges section.
-/tmp/ccCXXann.o: in function `main':
+/tmp/ccOEpy1M.o: in function `main':
 conftest.c:(.text.startup+0x7): undefined reference to `htonll'
 collect2: error: ld returned 1 exit status
 configure:4013: $? = 1
@@ -350,7 +350,7 @@ configure:4022: result: no
 configure:4041: checking for ntohll in -lc
 configure:4066: gcc -o conftest -g -O2   conftest.c -lc  -lc -lc -lc -lc -lc -lc -lc -lc  >&5
 /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: DWARF error: can't find .debug_ranges section.
-/tmp/cc2rmtOb.o: in function `main':
+/tmp/ccaoQHcU.o: in function `main':
 conftest.c:(.text.startup+0x7): undefined reference to `ntohll'
 collect2: error: ld returned 1 exit status
 configure:4066: $? = 1
@@ -428,7 +428,7 @@ configure:4546: result: yes
 configure:4613: checking for OpenSSL_add_all_algorithms
 configure:4613: gcc -o conftest -g -O2   conftest.c -lssl -lcrypto -lc -lc -lc -lc -lc -lc -lc -lc  >&5
 /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: DWARF error: can't find .debug_ranges section.
-/tmp/cc2h7lt3.o: in function `main':
+/tmp/ccKIN7qK.o: in function `main':
 conftest.c:(.text.startup+0x7): undefined reference to `OpenSSL_add_all_algorithms'
 collect2: error: ld returned 1 exit status
 configure:4613: $? = 1
@@ -516,7 +516,7 @@ configure:4613: result: yes
 configure:4613: checking for EVP_rc5_32_12_16_cbc
 configure:4613: gcc -o conftest -g -O2   conftest.c -lssl -lcrypto -lc -lc -lc -lc -lc -lc -lc -lc  >&5
 /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: DWARF error: can't find .debug_ranges section.
-/tmp/ccmJtl6G.o: in function `main':
+/tmp/cc87Z1ej.o: in function `main':
 conftest.c:(.text.startup+0x7): undefined reference to `EVP_rc5_32_12_16_cbc'
 collect2: error: ld returned 1 exit status
 configure:4613: $? = 1
@@ -623,7 +623,7 @@ configure:4613: result: yes
 configure:4613: checking for SSL_set_tlsext_host_name
 configure:4613: gcc -o conftest -g -O2   conftest.c -lssl -lcrypto -lc -lc -lc -lc -lc -lc -lc -lc  >&5
 /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: /usr/lib/gcc/i486-pc-linux-gnu/12.0.0/../../../../i486-pc-linux-gnu/bin/ld: DWARF error: can't find .debug_ranges section.
-/tmp/cc8XJySv.o: in function `main':
+/tmp/ccsK0c79.o: in function `main':
 conftest.c:(.text.startup+0x7): undefined reference to `SSL_set_tlsext_host_name'
 collect2: error: ld returned 1 exit status
 configure:4613: $? = 1

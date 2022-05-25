@@ -4,6 +4,7 @@
 #include "common.h"
 #include "port-config.h"
 
+
 typedef struct
 {
     int Flags;
@@ -16,8 +17,8 @@ typedef struct
 		char *WWWAuthenticate;
 		char *ProxyAuthenticate;
 		char *MunshinAuthenticate;
-    char *Permits;
 		char *Request;
+    int Permits;
 } TWebSession;
 
 

@@ -28,7 +28,7 @@ static int HttpAuthParseAuthenticate(const char *AuthDetails, char **User, char 
 
 static int HttpAuthState(TWebSession *Session, TPortConfig *Config, int ProxyLogon)
 {
-    char *Password=NULL;
+    char *Password=NULL, *Permits=NULL;
     int RetVal=AUTH_NONE;
 
     if (StrValid(Session->MunshinAuthenticate)) HttpAuthParseAuthenticate(Session->MunshinAuthenticate, &Session->User, &Password);
@@ -38,16 +38,19 @@ static int HttpAuthState(TWebSession *Session, TPortConfig *Config, int ProxyLog
     if (StrValid(Session->User) && StrValid(Password))
     {
         if (
-            (UserFileAuth(Config->AuthFile, Session->User, Password, &Session->Permits)) ||
-            (OneTimePasswordAuth(Config->OTPDB, Session->User, Password, &Session->Permits))
+            (UserFileAuth(Config->AuthFile, Session->User, Password, &Permits)) ||
+            (OneTimePasswordAuth(Config->OTPDB, Session->User, Password, &Permits))
         )
         {
             if (StrValid(Session->MunshinAuthenticate)) RetVal=AUTH_COOKIE;
             else RetVal=AUTH_BASIC;
         }
+
+				Session->Permits=UserParsePermits(Permits);
     }
 
     Destroy(Password);
+    Destroy(Permits);
 
     return(RetVal);
 }

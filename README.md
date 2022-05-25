@@ -99,17 +99,18 @@ Available rules for 'allow', 'deny', "sufficient' or 'required' options are:
 
 
 ```
-all                   - allow or deny all connections
-ip:<addresses>        - match IP address. 'addresses' can be a comma-seperated list of IP addresses or IP ranges (using /xx notation).
-mac:<addresses>       - match MAC address. 'addresses' can be a comma-seperated list of MAC addresses.
-region:<regions>      - match geolocation of remote host. 'regions' can be a comma-separated list of two-letter country codes, or registrar names
-host:<host names>     - match hostname as looked up via DNS.
-dyndns:<host names>   - match hostname as looked up via a method compatible with dynamic dns services.
-dnslist:<dnsbl list>  - check if remote IP is in dns blocklists/allowlists.
-user:<user names>     - check user as verified by TLS/SSL certificate, local connection credentials, or munauth methods.
-process:<path>        - only works for local connections. Check process path. Matches the *full path* of the executable at the other end of the connection.
-munauth:<config>      - check if connection is authenticated via the 'munauth' system
-cert-issuer:<name>    - check if TLS/SSL certificate was issued by named issuer.
+all                      - allow or deny all connections
+ip:<addresses>           - match IP address. 'addresses' can be a comma-seperated list of IP addresses or IP ranges (using /xx notation).
+mac:<addresses>          - match MAC address. 'addresses' can be a comma-seperated list of MAC addresses.
+region:<regions>         - match geolocation of remote host. 'regions' can be a comma-separated list of two-letter country codes, or registrar names
+host:<host names>        - match hostname as looked up via DNS.
+dyndns:<host names>      - match hostname as looked up via a method compatible with dynamic dns services.
+dnslist:<dnsbl list>     - check if remote IP is in dns blocklists/allowlists.
+user:<user names>        - check user as verified by TLS/SSL certificate, local connection credentials, or munauth methods.
+process:<path>           - only works for local connections. Check process path. See 'Local Connections' below.
+localuser:<user names>   - only works for local connections. Check local user. See 'Local Connections' below.
+munauth:<config>         - check if connection is authenticated via the 'munauth' system
+cert-issuer:<name>       - check if TLS/SSL certificate was issued by named issuer.
 ```
 
 These rules will be discussed in detail in the 'AUTHENTICATION' section below.
@@ -568,3 +569,26 @@ Confirmed Connections
 If a forward has been configured with a 'confirm' option that defines a 'confirm queue' file, then users with the correct permissions will be presented with the option to allow or deny these queued connections.
 
 If a web frontend user is configured with 'confirm-self' permissions, they they will be able to allow or deny connections from the same IP Addres as the one they are connected to the web frontend from, and will only be shown those connections in the web interface. If the user is configured with 'confirm-all' then they will be able to allow/deny all waiting connections.
+
+
+
+LOCAL CONNECTIONS
+=================
+
+On linux munshin can authenticate against the system user and process exectuable path for connections over a unix socket, or over local TCP. As this is dependant on the /proc filesystem and/or unix PEERSOCK credentials this is a linux only feature.
+
+you can allow or deny local processes with entries like:
+
+
+```
+forward 8080:myhost.xyz:80 allow=process:/usr/bin/links
+```
+
+and local users with entries like:
+
+```
+forward 8080:myhost.xyz:80 allow=localuser:nobody
+```
+
+
+

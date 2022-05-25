@@ -87,24 +87,14 @@ static void WebManagementRegisterHostPage(STREAM *Client, TPortConfig *Config, T
 
 static int WebManagementConfirmConnectionsCheckPermit(const char *Connection, TWebSession *Session)
 {
-    char *Token=NULL, *RemoteIP=NULL;
-    const char *ptr;
+    char *RemoteIP=NULL;
     int RetVal=FALSE;
 
     GetToken(Connection, ":", &RemoteIP, 0);
-    ptr=GetToken(Session->Permits, ",", &Token, 0);
-    while (ptr)
-    {
-        if (strcmp(Token, "confirm-self") == 0)
-        {
-            if (strcmp(RemoteIP, Session->PeerIP)==0) RetVal=TRUE;
-        }
-        else if (strcmp(Token, "confirm-all") == 0) RetVal=TRUE;
-        ptr=GetToken(ptr, ",", &Token, 0);
-    }
+    if ((Session->Permits & PERMIT_CONFIRM_SELF) && (strcmp(RemoteIP, Session->PeerIP)==0)) RetVal=TRUE;
+    if (Session->Permits & PERMIT_CONFIRM_ALL) RetVal=TRUE;
 
     Destroy(RemoteIP);
-    Destroy(Token);
 
     return(RetVal);
 }
@@ -202,8 +192,7 @@ static void WebManagementPeerPage(STREAM *Client, TPortConfig *Config)
 
 static void WebManagementDefaultPage(STREAM *Client, TPortConfig *Config, TWebSession *Session)
 {
-    char *Token=NULL, *Tempstr=NULL;
-    const char *ptr;
+    char *Tempstr=NULL;
 
     STREAMWriteLine("<h1>Munshin Web Interface</h1>\r\n", Client);
     Tempstr=MCopyStr(Tempstr, "<p>Your IP visible to this server is: ", Session->PeerIP, "</p>\r\n", NULL);
@@ -211,9 +200,10 @@ static void WebManagementDefaultPage(STREAM *Client, TPortConfig *Config, TWebSe
     WebManagementRegisterHostPage(Client, Config, Session);
     WebManagementConfirmConnections(Client, Config, Session);
 
+    if ((Session->Permits & PERMIT_REGISTER_IP) && StrValid(Config->IPDB)) ItemDBAdd(Config->IPDB, Session->PeerIP, "allow", Config->Expire);
+    if ((Session->Permits & PERMIT_REGISTER_MAC) && StrValid(Config->MACDB)) ItemDBAdd(Config->MACDB, Session->PeerMAC, "allow", Config->Expire);
 
     Destroy(Tempstr);
-    Destroy(Token);
 }
 
 static void WebManagementConfirmedPage(STREAM *Client)

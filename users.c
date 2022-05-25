@@ -2,6 +2,30 @@
 #include "item-db.h"
 
 
+int UserParsePermits(const char *Permits)
+{
+int Flags=0;
+char *Token=NULL;
+const char *ptr;
+
+ptr=GetToken(Permits, ",", &Token, 0);
+while (ptr)
+{
+if (strcasecmp(Token, "confirm-self")==0) Flags |= PERMIT_CONFIRM_SELF;
+if (strcasecmp(Token, "confirm-all")==0) Flags |= PERMIT_CONFIRM_ALL;
+if (strcasecmp(Token, "register-ip")==0) Flags |= PERMIT_REGISTER_IP;
+if (strcasecmp(Token, "register-mac")==0) Flags |= PERMIT_REGISTER_MAC;
+if (strcasecmp(Token, "one-time-pass")==0) Flags |= PERMIT_ONE_TIME_PASS;
+if (strcasecmp(Token, "otp")==0) Flags |= PERMIT_ONE_TIME_PASS;
+ptr=GetToken(ptr, ",", &Token, 0);
+}
+
+Destroy(Token);
+
+return(Flags);
+}
+
+
 int UserFileAddEntry(const char *UserFile, const char *User, const char *Password, const char *Permit, time_t Expires)
 {
     char *Tempstr=NULL;

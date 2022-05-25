@@ -80,16 +80,38 @@ static void Socks5SendResult(STREAM *Client, uint8_t Result, uint8_t HostType, c
 }
 
 
-static int Socks5ProcessAuth(STREAM *Client, TPortConfig *Config, int AuthType)
+static int Socks5ProcessAuth(STREAM *Client, TPortConfig *Config)
 {
     char *User=NULL, *Pass=NULL;
-    int val, auth=FALSE;
+    int val, auth=FALSE, len, i;
+	  int	AuthType=SOCKSAUTH_NOAVAILABLE;
+
+
+
+
+    //ReadNumber of authentication methods
+    len=STREAMReadChar(Client);
+
+    for (i=0; i < len; i++)
+    {
+        val=STREAMReadChar(Client);
+				fprintf(stderr, "SA : %d\n", val);
+        if (val==SOCKSAUTH_PASSWD) AuthType=val;
+    }
+
+		if (Config->Flags & PORT_NO_AUTH) AuthType=SOCKSAUTH_OPEN;
+
+		fprintf(stderr, "SAT: %d\n", AuthType);
+    STREAMWriteChar(Client, SOCKS5_VERSION); //version, socks 5
+    STREAMWriteChar(Client, AuthType);
+    STREAMFlush(Client);
+
 
     switch (AuthType)
     {
-    case SOCKSAUTH_OPEN:
-        return(TRUE);
-        break;
+		case SOCKSAUTH_OPEN:
+						return(TRUE);
+						break;
 
     case SOCKSAUTH_PASSWD:
         val=STREAMReadChar(Client);
@@ -99,17 +121,17 @@ static int Socks5ProcessAuth(STREAM *Client, TPortConfig *Config, int AuthType)
             Pass=Socks5ReadString(Pass, Client);
 
             if (StrValid(Config->OTPDB)) auth=OneTimePasswordAuth(Config->OTPDB, User, Pass, NULL);
-            if (StrValid(Config->AuthFile)) auth=OneTimePasswordAuth(Config->AuthFile, User, Pass, NULL);
+            if (StrValid(Config->AuthFile)) auth=UserFileAuth(Config->AuthFile, User, Pass, NULL);
 
-            STREAMWriteChar(Client, 1); //version, socks 5
+		fprintf(stderr, "SPA: [%s] [%s] %d\n", User, Pass, auth);
+            STREAMWriteChar(Client, 1); //negotiation type
             if (auth)
             {
                 STREAMWriteChar(Client, SOCKS5_SUCCESS);
-
-                STREAMFlush(Client);
                 STREAMSetValue(Client, "User", User);
             }
             else STREAMWriteChar(Client, SOCKS5_FAIL);
+
 
             Destroy(User);
             Destroy(Pass);
@@ -126,29 +148,15 @@ static int Socks5ProcessAuth(STREAM *Client, TPortConfig *Config, int AuthType)
 char *Socks5ProcessHandshake(char *URL, STREAM *Client, TPortConfig *Config)
 {
     char *User=NULL, *Pass=NULL, *Dest=NULL, *Tempstr=NULL, *ptr;
-    int i, len, val, Port, AuthType=SOCKSAUTH_NOAVAILABLE;
+    int i, len, val, Port;
     int RetVal=FALSE;
 
     STREAMSetFlushType(Client, FLUSH_FULL, 0, 0);
-    //ReadNumber of authentication methods
 
-
-    len=STREAMReadChar(Client);
-
-    for (i=0; i < len; i++)
+    if (Socks5ProcessAuth(Client, Config))
     {
-        val=STREAMReadChar(Client);
-        if (val==SOCKSAUTH_PASSWD) AuthType=val;
-    }
+        STREAMFlush(Client); //flush Socks5ProcessAuth response
 
-    AuthType=0;
-    STREAMWriteChar(Client, SOCKS5_VERSION); //version, socks 5
-    STREAMWriteChar(Client, AuthType);
-    STREAMFlush(Client);
-
-
-    if (Socks5ProcessAuth(Client, Config, AuthType))
-    {
         val=STREAMReadChar(Client);
 
         if (val==SOCKS5_VERSION)

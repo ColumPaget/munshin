@@ -98,6 +98,7 @@ void PortConfigAddSettings(TPortConfig *Config, const char *Settings)
             Config->MunshinEnvironment=MCatStr(Config->MunshinEnvironment, "chroot=", Value, " ", NULL);
         }
         else if (strcasecmp(Name, "listen")==0) Config->ListenQueueSize=atoi(Value);
+        else if (strcasecmp(Name, "noauth")==0) Config->Flags |= PORT_NO_AUTH;
         else if (strcasecmp(Name, "sttl")==0) Config->SrcTTL=atoi(Value);
         else if (strcasecmp(Name, "stos")==0) Config->SrcTOS=atoi(Value);
         else if (strcasecmp(Name, "src-ttl")==0) Config->SrcTTL=atoi(Value);

@@ -34,21 +34,29 @@ int URL_IsValid(const char *URL)
 
 time_t ParseDuration(const char *Duration)
 {
-time_t Secs;
-char *ptr;
+    time_t Secs;
+    char *ptr;
 
-Secs=strtol(Duration, &ptr, 10);
-if (ptr)
-{
-while (isspace(*ptr)) ptr++;
-switch (*ptr)
-{
-case 'm': Secs *= 60; break;
-case 'h': Secs *= 3600; break;
-case 'd': Secs *= 3600 * 24; break;
-case 'w': Secs *= 3600 * 24 * 7; break;
-}
-}
+    Secs=strtol(Duration, &ptr, 10);
+    if (ptr)
+    {
+        while (isspace(*ptr)) ptr++;
+        switch (*ptr)
+        {
+        case 'm':
+            Secs *= 60;
+            break;
+        case 'h':
+            Secs *= 3600;
+            break;
+        case 'd':
+            Secs *= 3600 * 24;
+            break;
+        case 'w':
+            Secs *= 3600 * 24 * 7;
+            break;
+        }
+    }
 
-return(Secs);
+    return(Secs);
 }

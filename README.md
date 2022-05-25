@@ -47,7 +47,6 @@ forward <service port>:web_manager <options>
 
 The 'include' entry pulls in settings from another file.
 
-
 The 'logfile' entry specifies a logfile path.
 
 The 'pidfile' entry specifies a pidfile path.
@@ -85,7 +84,15 @@ require=<requirement>
 abort=<requirement>
 ```
 
-Multiple rules can exist in a single 'forward' record, and they are processed in order. 'allow' and 'deny' rules can be overriden by later entries. A 'sufficient' rule, if matched, instantly causes a 'forward' record to be selected. An 'abort' rule, if matched, instantly causes a forward record to be ignored. A 'required' rule, if NOT matched, instantly causes a forward record to be ignored. 
+Multiple rules can exist in a single 'forward' record, and they are processed in order. 
+
+'allow' and 'deny' rules can be overriden by later entries.
+
+A 'sufficient' rule, if matched, instantly causes a 'forward' record to be selected. 
+
+An 'abort' rule, if matched, instantly causes a forward record to be ignored.
+
+A 'required' rule, if NOT matched, instantly causes a forward record to be ignored. 
 
 
 Available rules for 'allow', 'deny', "sufficient' or 'required' options are:
@@ -145,10 +152,6 @@ otp-db=<path>         - path to one-time-password file that can be updated by mu
 authdb=<path>         - path to authentication credentials file
 auth-db=<path>        - path to authentication credentials file
 banner=<text>         - 'banner' used for web-based services.
-
-        else if (strcasecmp(Name, "namespace")==0) Config->Namespaces=MCatStr(Config->Namespaces,Value,",", NULL);
-        else if (strcasecmp(Name, "namespaces")==0) Config->Namespaces=MCatStr(Config->Namespaces,Value,",", NULL);
-        else if (strcasecmp(Name, "script")==0) Config->Script=CopyStr(Config->Script, Value);
 ```
 
 The 'config' option can be used to include a list of options previously declared using the 'config' entry type, like so:
@@ -184,6 +187,14 @@ The 'ssl-level', 'ssl-cert', 'ssl-key', 'ssl-verify', 'ssl-ciphers', and 'ssl-dh
 'ssl-dhparams' specifies the path to a file that provides Diffie Helman parameters for perfect-forward-secrecy.
 
 'chuser' and 'chgroup' allow setting the user and group that the munshin service process runs as. This is particularly important if the destination is of the 'cmd:' type. If not specified munshin will try to switch to user 'nobody' and failing that will switch to uid '99'.
+
+
+TTL and ToS
+===========
+
+The src-ttl, src-tos, dst-ttl and dst-tos allow setting IP packet values on either the 'source' (client) connection, or the 'destination' connection that the client is connecting to. The TTL value is is a number associated with a network packet that is decremented every time the packet passes through a router/gateway. When the number hits zero the packet is discarded. Thus, if you set up a munshin service/forward port to have a TTL of two, and getting to the internet requires more than two 'hops' thorugh multiple routers, then packets from the port will never be able to leave your local network. 
+
+ToS sets another value, the 'type of service' which can be used to mark packets to be treated differently by firewall rules.
 
 
 INETD

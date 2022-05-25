@@ -131,6 +131,7 @@ void PortConfigAddSettings(TPortConfig *Config, const char *Settings)
         else if (strcasecmp(Name, "ip-db")==0) Config->IPDB=CopyStr(Config->IPDB, Value);
         else if (strcasecmp(Name, "macdb")==0) Config->MACDB=CopyStr(Config->MACDB, Value);
         else if (strcasecmp(Name, "mac-db")==0) Config->MACDB=CopyStr(Config->MACDB, Value);
+        else if (strcasecmp(Name, "expire")==0) Config->Expire=ParseDuration(Value);
         else if (strcasecmp(Name, "script")==0) Config->Script=CopyStr(Config->Script, Value);
         else if (strcasecmp(Name, "banner")==0) Config->Banner=CopyStr(Config->Banner, Value);
         else if (strcasecmp(Name, "config")==0)

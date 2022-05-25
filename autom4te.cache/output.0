@@ -680,6 +680,7 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_largefile
+enable_ip6
 enable_ssl
 with_system_libuseful
 '
@@ -1300,6 +1301,7 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-largefile     omit support for large files
+  --enable-ip6              use IPv6 (default=no)
   --enable-ssl              use Secure Sockets Layer (default=no)
 
 Optional Packages:
@@ -3560,12 +3562,18 @@ rm -rf conftest*
 fi
 
 
+@%:@ Check whether --enable-ip6 was given.
+if test "${enable_ip6+set}" = set; then :
+  enableval=$enable_ip6; cf_use_ip6=$enableval 
+fi
+
 @%:@ Check whether --enable-ssl was given.
 if test "${enable_ssl+set}" = set; then :
   enableval=$enable_ssl; cf_use_ssl=$enableval 
 fi
 
-if test "$cf_use_ssl" = "yes"
+
+if test "$cf_use_ssl" == "yes"
 then
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_library_init in -lssl" >&5
 $as_echo_n "checking for SSL_library_init in -lssl... " >&6; }

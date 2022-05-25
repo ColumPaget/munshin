@@ -41,8 +41,8 @@ static void WebManagementRegisterHost(TPortConfig *Config, TWebSession *Session)
     char *Button=NULL, *Key=NULL;
 
     WebManagementParseSubmission(Session, &Button, &Key);
-    if ((strcasecmp(Button, "Register IP")==0) && StrValid(Config->IPDB)) ItemDBAdd(Config->IPDB, Session->PeerIP, "allow", GlobalConfig->AuthLifetime);
-    else if ((strcasecmp(Button, "Register MAC")==0) && StrValid(Config->MACDB)) ItemDBAdd(Config->MACDB, Session->PeerMAC, "allow", GlobalConfig->AuthLifetime);
+    if ((strcasecmp(Button, "Register IP")==0) && StrValid(Config->IPDB)) ItemDBAdd(Config->IPDB, Session->PeerIP, "allow", Config->Expire);
+    else if ((strcasecmp(Button, "Register MAC")==0) && StrValid(Config->MACDB)) ItemDBAdd(Config->MACDB, Session->PeerMAC, "allow", Config->Expire);
 
     Destroy(Button);
     Destroy(Key);
@@ -211,15 +211,6 @@ static void WebManagementDefaultPage(STREAM *Client, TPortConfig *Config, TWebSe
     WebManagementRegisterHostPage(Client, Config, Session);
     WebManagementConfirmConnections(Client, Config, Session);
 
-    ptr=GetToken(Session->Permits, ",", &Token, 0);
-    while (ptr)
-    {
-        //if ((strcasecmp(Token, "confirm")==0) && StrValid(Config->ConfirmsDB) ) WebManagementConfirmConnections(Client, Config);
-        if ((strcasecmp(Token, "ipdb")==0) && StrValid(Config->IPDB)) ItemDBAdd(Config->IPDB, Session->PeerIP, "allow", GlobalConfig->AuthLifetime);
-        if ((strcasecmp(Token, "macdb")==0) && StrValid(Config->MACDB)) ItemDBAdd(Config->MACDB, Session->PeerMAC, "allow", GlobalConfig->AuthLifetime);
-
-        ptr=GetToken(ptr, ",", &Token, 0);
-    }
 
     Destroy(Tempstr);
     Destroy(Token);
@@ -314,6 +305,8 @@ static void WebManagementOneTimePasswordPage(STREAM *Client, TPortConfig *Config
     Destroy(Tempstr);
 }
 
+
+
 static void WebManagementWebpages(STREAM *Client, TPortConfig *Config, TWebSession *Session)
 {
     char *Token=NULL, *Tempstr=NULL;
@@ -350,14 +343,6 @@ static void WebManagementWebpages(STREAM *Client, TPortConfig *Config, TWebSessi
         WebManagementDefaultPage(Client, Config, Session);
         STREAMWriteLine("</form></body></html>\r\n", Client);
     }
-//  WebManagementConfirmedPage(Client);
-
-    ptr=GetToken(Session->Permits, ",", &Token, 0);
-    while (ptr)
-    {
-        ptr=GetToken(ptr, ",", &Token, 0);
-    }
-
 
     if (StrValid(Config->Script))
     {
@@ -375,8 +360,8 @@ void WebManagementProcess(STREAM *Client, TPortConfig *Config)
 {
     TWebSession *Session;
 
-    if (! StrValid(Config->AuthFile))
-        Session=HttpAuth(Client, Config, FALSE);
+    if (! StrValid(Config->AuthFile)) Session=HttpAuth(Client, Config, FALSE);
+
     if (Session)
     {
         WebManagementWebpages(Client, Config, Session);

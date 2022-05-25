@@ -196,6 +196,24 @@ int ConfigInit(int argc, char **argv)
             printf("%s\n", Tempstr);
             exit(0);
         }
+        else if (
+            (strcmp(arg, "-?")==0) ||
+            (strcmp(arg, "-help")==0) ||
+            (strcmp(arg, "--help")==0)
+        )
+        {
+            PrintHelp();
+            exit(0);
+        }
+        else if
+        (
+            (strcmp(arg, "-version")==0) ||
+            (strcmp(arg, "--version")==0)
+        )
+        {
+            PrintVersion();
+            exit(0);
+        }
         else CommandLineParseStandardArgs(CMD);
     }
 

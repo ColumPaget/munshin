@@ -8,8 +8,10 @@ AC_PROG_INSTALL
 AC_HEADER_STDC
 AC_SYS_LARGEFILE
 
+AC_ARG_ENABLE(ip6, [  --enable-ip6              use IPv6 (default=no)], cf_use_ip6=$enableval )
 AC_ARG_ENABLE(ssl, [  --enable-ssl              use Secure Sockets Layer (default=no)], cf_use_ssl=$enableval )
-if test "$cf_use_ssl" = "yes"
+
+if test "$cf_use_ssl" == "yes"
 then
 AC_CHECK_LIB(ssl,SSL_library_init,,)
 cf_have_libssl=$ac_cv_lib_ssl_SSL_library_init

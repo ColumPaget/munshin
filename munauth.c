@@ -70,7 +70,7 @@ static int MunAuthUpdate(const char *AuthFilePath, const char *URL, const char *
         AuthStr=CatStr(AuthStr, "\n");
 
         FinalURL=CopyStr(FinalURL, URL);
-				if (! StrValid(FinalURL)) FinalURL=CopyStr(FinalURL, "-"); 
+        if (! StrValid(FinalURL)) FinalURL=CopyStr(FinalURL, "-");
 
         if (strncasecmp(FinalURL, "https-put:", 10)==0)
         {

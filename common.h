@@ -1,7 +1,9 @@
-#ifndef MUNSHIN_COMMOM_H
-#define MUNSHIN_COMMOM_H
+#ifndef MUNSHIN_COMMON_H
+#define MUNSHIN_COMMON_H
 
 #include "libUseful-4/libUseful.h"
+
+#define VERSION "1.0"
 
 extern struct timeval Now;
 

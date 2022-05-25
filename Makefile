@@ -1,10 +1,10 @@
 CC = gcc
 CFLAGS = -g -O2
 LDFLAGS=
-LIBS = -lcrypt  libUseful/libUseful.a
-FLAGS=$(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -fPIC -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -D_FILE_OFFSET_BITS=64 -DHAVE_LIBCRYPT=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_SHADOW_H=1 -DHAVE_MADVISE -DHAVE_MADVISE_NOFORK -DHAVE_MADVISE_DONTDUMP -DHAVE_MLOCK -DVERSION=\"$(VERSION)\"
+LIBS = -lcrypt -lcrypto -lssl  libUseful/libUseful.a
+FLAGS=$(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -fPIC -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -D_FILE_OFFSET_BITS=64 -DHAVE_LIBSSL=1 -DHAVE_LIBCRYPTO=1 -DHAVE_LIBCRYPT=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_SHADOW_H=1 -DHAVE_MADVISE -DHAVE_MADVISE_NOFORK -DHAVE_MADVISE_DONTDUMP -DHAVE_MLOCK
 prefix=/usr/local
-OBJ=common.o ip-address.o ip-region.o mapped-files.o dnslist.o signed-string.o external-ip.o munauth.o unix-sock.o port-config.o config.o item-db.o inetd.o service.o rules.o syslog.o process.o socks-proxy.o users.o arp.o namespaces.o connection-confirm.o one-time-password.o http.o http-auth.o web_manager.o libUseful/libUseful.a
+OBJ=common.o ip-address.o ip-region.o mapped-files.o dnslist.o signed-string.o external-ip.o munauth.o unix-sock.o port-config.o config.o item-db.o inetd.o service.o rules.o syslog.o process.o socks-proxy.o users.o arp.o namespaces.o connection-confirm.o one-time-password.o http.o http-auth.o web_manager.o help.o libUseful/libUseful.a
 
 all: $(OBJ) main.c
 	gcc $(FLAGS) -omunshin main.c $(OBJ) $(LIBS)
@@ -90,6 +90,10 @@ http-auth.o:http-auth.h http-auth.c common.h
 
 web_manager.o:web_manager.h web_manager.c common.h
 	gcc $(FLAGS) -c web_manager.c
+
+help.o:help.h help.c common.h
+	gcc $(FLAGS) -c help.c
+
 
 
 clean:

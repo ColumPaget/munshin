@@ -2,9 +2,9 @@ CC = @CC@
 CFLAGS = @CFLAGS@
 LDFLAGS=@LDFLAGS@
 LIBS = @LIBS@ @STATIC_LIBS@
-FLAGS=$(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -fPIC @DEFS@ -DHAVE_MADVISE -DHAVE_MADVISE_NOFORK -DHAVE_MADVISE_DONTDUMP -DHAVE_MLOCK -DVERSION=\"$(VERSION)\"
+FLAGS=$(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -fPIC @DEFS@ -DHAVE_MADVISE -DHAVE_MADVISE_NOFORK -DHAVE_MADVISE_DONTDUMP -DHAVE_MLOCK
 prefix=@prefix@
-OBJ=common.o ip-address.o ip-region.o mapped-files.o dnslist.o signed-string.o external-ip.o munauth.o unix-sock.o port-config.o config.o item-db.o inetd.o service.o rules.o syslog.o process.o socks-proxy.o users.o arp.o namespaces.o connection-confirm.o one-time-password.o http.o http-auth.o web_manager.o @STATIC_LIBS@
+OBJ=common.o ip-address.o ip-region.o mapped-files.o dnslist.o signed-string.o external-ip.o munauth.o unix-sock.o port-config.o config.o item-db.o inetd.o service.o rules.o syslog.o process.o socks-proxy.o users.o arp.o namespaces.o connection-confirm.o one-time-password.o http.o http-auth.o web_manager.o help.o @STATIC_LIBS@
 
 all: $(OBJ) main.c
 	gcc $(FLAGS) -omunshin main.c $(OBJ) $(LIBS)
@@ -90,6 +90,10 @@ http-auth.o:http-auth.h http-auth.c common.h
 
 web_manager.o:web_manager.h web_manager.c common.h
 	gcc $(FLAGS) -c web_manager.c
+
+help.o:help.h help.c common.h
+	gcc $(FLAGS) -c help.c
+
 
 
 clean:

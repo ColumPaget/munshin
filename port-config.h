@@ -37,6 +37,7 @@ int DestTTL;
 int DestTOS;
 int DestMARK;
 int SrcKeepAlive;
+time_t Expire;
 char *Proxy;
 char *SSLLevel;
 char *SSLCert;

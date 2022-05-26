@@ -190,12 +190,63 @@ The 'ssl-level', 'ssl-cert', 'ssl-key', 'ssl-verify', 'ssl-ciphers', and 'ssl-dh
 'chuser' and 'chgroup' allow setting the user and group that the munshin service process runs as. This is particularly important if the destination is of the 'cmd:' type. If not specified munshin will try to switch to user 'nobody' and failing that will switch to uid '99'.
 
 
+
+
 TTL and ToS
 ===========
 
 The src-ttl, src-tos, dst-ttl and dst-tos allow setting IP packet values on either the 'source' (client) connection, or the 'destination' connection that the client is connecting to. The TTL value is is a number associated with a network packet that is decremented every time the packet passes through a router/gateway. When the number hits zero the packet is discarded. Thus, if you set up a munshin service/forward port to have a TTL of two, and getting to the internet requires more than two 'hops' thorugh multiple routers, then packets from the port will never be able to leave your local network. 
 
 ToS sets another value, the 'type of service' which can be used to mark packets to be treated differently by firewall rules.
+
+These features are activated via setsockopt, and will work on linux, and maybe on other O.S. supporting the `IP_TTL` and `IP_TOS` socket options. 
+
+
+NETWORK NAMESPACES
+==================
+
+A munshin forward or service can be bound into a linux network namespace like so:
+
+
+```
+forward 8080:192.168.1.10:80 namespace=app_jail
+```
+
+In the above case the namespace must have appropriate file-descriptors in /var/run/netns. If your namespaces are not set up that way, then you can instead use the pid of a process already in the namespace (e.g. the namespace 'init' process) like so:
+
+```
+forward 8080:192.168.1.10:80 namespace=pid:8244
+```
+
+Used in conjunction with socks5 or transparent proxy mode (see both below) this can be used to proxy apps 'trapped' in a network namespace with no external network accesss.
+
+
+TRANSPARENT PROXY
+=================
+
+Under linux munshin supports 'transparent proxy' mode where the firewall redirects a connection to a munshin port rather than letting it connect directly to it's destination. This redirection has to be set up under ipchains, iptables or whatever else linux is using this month, and then configured in munshin as either:
+
+
+```
+forward 8080T:192.168.30.1:80
+```
+or
+
+```
+forward 8080:tproxy:192.168.30.1:80
+```
+
+in this use munshin will redirect anything sent to the port to 192.168.30.1 port 80. If you wish to allow hosts to connect to their intended destination, except with some extra logging, or perhaps applying 'allow/deny' rules, then you need to use the format:
+
+```
+service 8080T
+```
+or
+
+```
+service 8080:tproxy
+```
+
 
 
 INETD

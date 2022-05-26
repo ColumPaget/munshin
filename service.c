@@ -443,6 +443,10 @@ static STREAM *ServiceConnect(STREAM *Client, TPortConfig *Config)
         Flags |= CONNECT_SOCKS;
         if (StrValid(ptr)) DestURL=ServiceParseConnectDest(DestURL, ptr);
     }
+    else if (strcasecmp(Token, "tproxy")==0)
+    {
+        DestURL=ServiceGetTProxyConnectDest(DestURL, Client);
+    }
     else if (strcasecmp(Token, "htauth")==0)
     {
         if (HttpTunnelAuth(Client, Config)) DestURL=ServiceParseConnectDest(DestURL, ptr);

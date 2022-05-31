@@ -14,13 +14,20 @@ char *NetworkNamespaceEnter(char *NamespaceID, const char *NSName, TPortConfig *
     char *Path=NULL;
     int ns_fd=-1;
 
+		if (! StrValid(NSName)) return("");
+
     if (strncmp(NSName, "pid:", 4)==0)
     {
         Path=FormatStr(Path, "/proc/%d/ns/net", atoi(NSName + 4));
         NamespaceID=SetStrLen(NamespaceID, 100);
         readlink(Path, NamespaceID, 100);
     }
-    else
+    else if (*NSName=='/') 
+		{
+			Path=CopyStr(Path, NSName);
+			NamespaceID=CopyStr(NamespaceID, NSName);
+		}
+		else
     {
         Path=MCopyStr(Path, "/var/run/netns/", NSName, NULL);
         NamespaceID=CopyStr(NamespaceID, NSName);

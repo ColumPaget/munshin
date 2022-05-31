@@ -5,6 +5,7 @@
 #include "external-ip.h"
 #include "dnslist.h"
 #include "users.h"
+#include "help.h"
 
 TConfig *GlobalConfig=NULL;
 ListNode *DefinedConfigs=NULL;
@@ -160,7 +161,7 @@ int ConfigInit(int argc, char **argv)
 
     if (arg)
     {
-        if (strcmp(arg, "useradd")==0)
+        if ( (strcmp(arg, "adduser")==0) || (strcmp(arg, "useradd")==0))
         {
             arg=CommandLineNext(CMD); // consume 'useradd' as we 'Peeked' it
             UserAdd(CMD);
@@ -205,6 +206,11 @@ int ConfigInit(int argc, char **argv)
             PrintHelp();
             exit(0);
         }
+				else if (strcmp(arg, "--help-config")==0)
+				{
+            PrintHelpConfig();
+            exit(0);
+				}
         else if
         (
             (strcmp(arg, "-version")==0) ||

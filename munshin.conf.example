@@ -1,0 +1,39 @@
+#this file contains some examples of munshin configs
+
+#basic forward using TLS/SSL. Forward localport 443 to google using TLS/SSL cert and key
+forward 443s:www.google.com:80 sslcert=/etc/ssl/mycert.crt sslkey=/etc/ssl/mycert.key 
+
+#forward rule allowing localhost and ips in the range 192.168.50.* to connect, except for 192.168.50.49
+forward 5999:192.168.60.1:5900 allow=ip:127.0.0.1,192.168.50.* deny=ip:192.168.50.49
+
+#same as above rule, except using  192.168.50.0/24 instead of 192.168.50.* to achieve same result
+forward 5999:192.168.60.1:5900 allow=ip:127.0.0.1,192.168.50.0/24 deny=ip:192.168.50.49
+
+#define a config that can be used in future rules
+config sslconfig sslcert=/etc/ssl/mycert.crt sslkey=/etc/ssl/mycert.key 
+
+#forward from port 333 with TLS/ssl to port 333 on 'myhost' which is also using TLS/SSL. Get TLS config from previous definition
+forward 333s:myhost:333s config=sslconfig 
+
+#forward to freshcode.club using http authentication with the supplied authentication file containing users/passwords.
+forward 2222:htauth:freshcode.club:80 authfile=/etc/freshcode-users.auth
+
+#forward to freshcode.club using http authentication with the supplied ONE TIME PASSWORD file containing users/passwords.
+forward 8080:htauth:freshcode.club:80 otp-db=/tmp/otp.db
+
+#forward to freshcode.club using the 'munauth' system with creds delivered to the file 'creds' on https://fileserver
+forward 9090:freshcode.club:80 authfile=/home/colum/.munshin.auth allow=munauth:https://fileserver/creds
+
+#run a socks5 service
+service 9091:socks5 authfile=/home/colum/.munshin.auth
+
+#run a socks5 service, but forward every connection to 192.168.30.1:80
+forward 9091:socks5:192.168.30.1:80 authfile=/home/colum/.munshin.auth
+
+#forward connections on port 22 to port 22 on 192.168.30.1, using manual confirms of connections via the webmanagment screen
+forward 22:192.168.30.1:22 allow=confirms:/tmp/confirms.db
+
+#run a webmanager service that can register ip address, mac addresses, run a script on every login, allow manual confirms and
+#allow the production of one-time-passwords
+service 8010:webmgr ip-db=/tmp/ip.permit mac-db=/tmp/mac.permit script=/tmp/script.sh confirms=/tmp/confirms.db otp-db=/tmp/otp.db
+

@@ -212,7 +212,14 @@ A munshin forward or service can be bound into a linux network namespace like so
 forward 8080:192.168.1.10:80 namespace=app_jail
 ```
 
-In the above case the namespace must have appropriate file-descriptors in /var/run/netns. If your namespaces are not set up that way, then you can instead use the pid of a process already in the namespace (e.g. the namespace 'init' process) like so:
+In the above case the namespace must been setup as a directory named 'app_jail' in '/var/run/netns'. '/var/run/netns/app_jail' would then contain all the file descriptors for the namespace. If your namespaces are not set up that way, then you can instead supply the full path to a network namespace file descriptor:
+
+```
+forward 8080:192.168.1.10:80 namespace=/home/namespaces/jail1/net_fd
+```
+
+
+or use the pid of a process already in the namespace (e.g. the namespace 'init' process) like so:
 
 ```
 forward 8080:192.168.1.10:80 namespace=pid:8244

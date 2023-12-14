@@ -1,6 +1,6 @@
 #include "socks-proxy.h"
 #include "one-time-password.h"
-
+#include "users.h"
 
 
 static char *Socks5ReadString(char *RetStr, STREAM *Client)

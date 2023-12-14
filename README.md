@@ -471,7 +471,7 @@ As munshin can manage the TLS/SSL encryption of a connection, it can also do TLS
 
 Unfortunately, because SSL/TLS authentication is performed after connection acceptance, it cannot be used to select a 'forward' entry. You cannot have a 'forward' entry for one user, and another for a different user, and use SSL authentication to select between them. Instead, if a forward entry matches in all things other than its TLS/SSL setup it will be selected, and if Certificate authentication is required and the right certificate is not provided the connection will fail and the service will disconnect.
 
-Setting this authentication system up requires an 'ssl-verify' path must be provided that contains CA certifiates to be used in authenticating the client's certificate. Just providing this will prevent any hosts that cannot provide a valid certificate from connecting. Further granularity of authentication can be obtained using the 'user' or 'cert-issuer' rules. So we have:
+Setting this authentication system up requires an 'ssl-verify' path must be provided that contains CA certifiates to be used in authenticating the client's certificate. It can be a path to either a file containing concatanated CA certificates for use in verifying client certificates, or else to a directory containing single-file CA certificates. Just providing this will prevent any hosts that cannot provide a valid certificate from connecting. Further granularity of authentication can be obtained using the 'user' or 'cert-issuer' rules. So we have:
 
 ```
 	forward 443s:192.168.1.1:80 ssl-verify=/etc/ssl/certs 

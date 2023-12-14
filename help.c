@@ -19,7 +19,7 @@ void PrintHelp()
     printf("             -inetd                run munshin as an inetd, reading from /etc/inetd.conf\n");
     printf("             -cert <path>          use default certificate at <path> for TLS/SSL services\n");
     printf("             -key <path>           use default key at <path> for TLS/SSL services\n");
-    printf("             -cert-verify <path>   use C.A file at <path> for authenticating TLS/SSL connections\n");
+    printf("             -cert-verify <path>   <path> is either a 'bundle' file of C.A certificates or a directory of CA certificates for authenticating TLS/SSL connections \n");
     printf("             -version              print program version\n");
     printf("             --version             print program version\n");
     printf("             -?                    this help\n");
@@ -34,6 +34,9 @@ void PrintHelp()
     printf("   options:  -f <path>       register using user info in auth file at <path>\n");
     printf("             -u <user>       add user to file at <path>\n");
     printf("             -i <ip>         external ip address to register (autodetect if not supplied)\n");
+    printf("\n");
+    printf("munshin extip [url]                                display external IP address, needed sometimes for 'munshin register'.\n");
+    printf("   If [url] is supplied, then it is assumed to be an ssh url in the form 'ssh:user:password@host' or 'ssh:name' where 'name' is section name in the .ssh/config file, and munshin will try to deduce it's external ip using bash commands on the ssh server.\n");
     printf("\n");
 }
 

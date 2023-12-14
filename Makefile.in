@@ -1,16 +1,17 @@
 CC = @CC@
 CFLAGS = @CFLAGS@
 LDFLAGS=@LDFLAGS@
-LIBS = @LIBS@ @STATIC_LIBS@
+STATIC_LIBS=@LIBUSEFUL_BUNDLED@
+LIBS = @LIBS@
 FLAGS=$(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -fPIC @DEFS@ -DHAVE_MADVISE -DHAVE_MADVISE_NOFORK -DHAVE_MADVISE_DONTDUMP -DHAVE_MLOCK
 prefix=@prefix@
-OBJ=common.o ip-address.o ip-region.o mapped-files.o dnslist.o signed-string.o external-ip.o munauth.o unix-sock.o port-config.o config.o item-db.o inetd.o service.o rules.o syslog.o process.o socks-proxy.o users.o arp.o namespaces.o connection-confirm.o one-time-password.o http.o http-auth.o web_manager.o help.o @STATIC_LIBS@
+OBJ=common.o ip-address.o ip-region.o mapped-files.o dnslist.o signed-string.o external-ip.o munauth.o unix-sock.o port-config.o config.o item-db.o inetd.o service.o rules.o syslog.o process.o socks-proxy.o users.o arp.o namespaces.o connection-confirm.o one-time-password.o http.o http-auth.o web_manager.o help.o @LIBUSEFUL_BUNDLED@
 
 all: $(OBJ) main.c
-	gcc $(FLAGS) -omunshin main.c $(OBJ) $(LIBS)
+	gcc $(FLAGS) -omunshin main.c $(OBJ) $(LIBS) $(STATIC_LIBS)
 
-libUseful/libUseful.a: 
-	@cd libUseful; $(MAKE)
+libUseful-Bundled/libUseful.a: 
+	@cd libUseful-Bundled; $(MAKE)
 
 
 common.o:common.h common.c

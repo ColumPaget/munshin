@@ -1,5 +1,4 @@
 #include "external-ip.h"
-#include "libUseful-4/inet.h"
 
 static char *ExternalIPFromSSH(char *ExtIP, const char *URL)
 {

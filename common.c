@@ -32,6 +32,8 @@ int URL_IsValid(const char *URL)
 }
 
 
+//libUseful-4 lacks this
+#ifndef HAVE_PARSE_DURATION
 time_t ParseDuration(const char *Duration)
 {
     time_t Secs;
@@ -60,3 +62,4 @@ time_t ParseDuration(const char *Duration)
 
     return(Secs);
 }
+#endif

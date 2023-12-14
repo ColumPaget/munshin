@@ -1,53 +1,59 @@
-  
-AC_INIT([main.c])
+AC_INIT([munshin], [1.1])
 
 AC_PROG_CC
 AC_LANG_C
 AC_PROG_MAKE_SET
-AC_PROG_INSTALL
 AC_HEADER_STDC
 AC_SYS_LARGEFILE
 
-AC_ARG_ENABLE(ip6, [  --enable-ip6              use IPv6 (default=no)], cf_use_ip6=$enableval )
-AC_ARG_ENABLE(ssl, [  --enable-ssl              use Secure Sockets Layer (default=no)], cf_use_ssl=$enableval )
 
-if test "$cf_use_ssl" == "yes"
-then
-AC_CHECK_LIB(ssl,SSL_library_init,,)
-cf_have_libssl=$ac_cv_lib_ssl_SSL_library_init
+AC_ARG_WITH(libuseful, [  --with-libuseful		use system-wide libUseful (default=auto) ], cf_system_libuseful=$withval )
 
+dnl These libraries are required by libuseful. We only really need them if static linking, but
+dnl let's be lazy and just include them all anyway
+AC_CHECK_LIB(z,deflate,,)
 AC_CHECK_LIB(crypto,EVP_CIPHER_CTX_init,,)
-cf_have_libcrypto=$ac_cv_lib_crypto_EVP_CIPHER_CTX_init
-fi
+AC_CHECK_LIB(ssl,SSL_library_init,,)
+AC_CHECK_LIB(cap,cap_init,,)
 
 
-AC_CHECK_LIB(crypt, crypt,,)
-cf_have_libcrypt=$ac_cv_lib_crypt_crypt
-
-AC_CHECK_HEADER(shadow.h,AC_DEFINE(HAVE_SHADOW_H, 1))
-
-
-AC_ARG_WITH(system-libuseful, [  --with-system-libuseful       use systemwide libUseful.so rather than bundled version], cf_with_libuseful=$withval )
-
-if test "$cf_with_libuseful" != "no" -a "$cf_with_libuseful" != ""
+if test "$cf_system_libuseful" != "no"
 then
-AC_CHECK_LIB([Useful],[OpenSSLVerifyCallback],
-  [AC_CHECK_LIB([ssl],[SSL_new],,,[-lcrypto -lz])]
-  [AC_CHECK_LIB([crypto],[ERR_load_CRYPTO_strings],,,[-lz])]
-  [AC_CHECK_LIB([z],[inflate])]
-  ,,[-lssl -lcrypto -lz])
-AC_CHECK_LIB(Useful,GetToken)
-
-LUSEFUL="system"
-else
-LUSEFUL="bundled"
-STATIC_LIBS="libUseful/libUseful.a"
-AC_SUBST(STATIC_LIBS)
-AC_CONFIG_SUBDIRS([libUseful])
+	AC_CHECK_LIB([Useful-5],GetToken,[cf_have_libUseful5=yes],[cf_have_libUseful5=no])
+	if test "$cf_have_libUseful5" = "yes"
+	then
+	AC_CHECK_HEADERS([libUseful-5/libUseful.h])
+	else
+	AC_CHECK_LIB([Useful-4],GetToken,[cf_have_libUseful4=yes],[cf_have_libUseful4=no])
+	AC_CHECK_HEADERS([libUseful-4/libUseful.h])
+	fi
 fi
 
+if test "$cf_have_libUseful5" = "yes" 
+then
+  echo "installed libUseful-5 found, using that instead of bundled libUseful."
+  echo "if you want to use bundled libUseful, force it with --with-libuseful=no"
+  AC_SUBST(LIBUSEFUL_BUNDLED,"")
+  dnl Default behavior of AC_CHECK_LIB is to add the library to the LIBS variable
+  dnl previous AC_CHECK_LIB don't do this, because an action is supplied for them
+  AC_CHECK_LIB([Useful-5],GetToken)
+  AC_CHECK_LIB([Useful-5],ParseDuration,AC_DEFINE(HAVE_PARSE_DURATION))
+elif test "$cf_have_libUseful4" = "yes" 
+then
+  echo "installed libUseful-4 found, using that instead of bundled libUseful."
+  echo "if you want to use bundled libUseful, force it with --with-libuseful=no"
+  AC_SUBST(LIBUSEFUL_BUNDLED,"")
+  dnl Default behavior of AC_CHECK_LIB is to add the library to the LIBS variable
+  dnl previous AC_CHECK_LIB don't do this, because an action is supplied for them
+  AC_CHECK_LIB([Useful-4],GetToken)
+  AC_CHECK_LIB([Useful-4],ParseDuration,AC_DEFINE(HAVE_PARSE_DURATION))
+else
+  AC_SUBST(LIBUSEFUL_BUNDLED,"libUseful-Bundled/libUseful.a")
+  AC_CONFIG_SUBDIRS([libUseful-Bundled])
+  dnl Bundled libUseful has this function
+  AC_DEFINE(HAVE_PARSE_DURATION)
+fi
 
-
-dnl read Makefile.in and write Makefile 
+dnl read Makefile.in and write Makefile
 AC_OUTPUT(Makefile)
 

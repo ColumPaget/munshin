@@ -10,6 +10,7 @@
 #define ACT_ADDUSER 2
 
 #define CONFIG_INETD 1
+#define CONFIG_BACKGROUND 2
 
 
 typedef struct

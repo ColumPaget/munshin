@@ -46,7 +46,7 @@ static int HttpAuthState(TWebSession *Session, TPortConfig *Config, int ProxyLog
             else RetVal=AUTH_BASIC;
         }
 
-				Session->Permits=UserParsePermits(Permits);
+        Session->Permits=UserParsePermits(Permits);
     }
 
     Destroy(Password);

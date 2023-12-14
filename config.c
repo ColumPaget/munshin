@@ -117,10 +117,13 @@ void CommandLineParseStandardArgs(CMDLINE *CMD)
 {
     const char *arg;
 
+    arg=CommandLineFirst(CMD);
     while (arg)
     {
 
-        if (strcmp(arg, "-c")==0) GlobalConfig->ConfigFile=CopyStr(GlobalConfig->ConfigFile, CommandLineNext(CMD));
+        if (strcmp(arg, "-b")==0) GlobalConfig->Flags |= CONFIG_BACKGROUND;
+        else if (strcmp(arg, "-c")==0) GlobalConfig->ConfigFile=CopyStr(GlobalConfig->ConfigFile, CommandLineNext(CMD));
+        else if (strcmp(arg, "-f")==0) GlobalConfig->ConfigFile=CopyStr(GlobalConfig->ConfigFile, CommandLineNext(CMD));
         else if (strcmp(arg, "-q")==0) GlobalConfig->DefaultPortSettings=MCatStr(GlobalConfig->DefaultPortSettings, "listen=", CommandLineNext(CMD), " ", NULL);
         else if (strcmp(arg, "-listen")==0) GlobalConfig->DefaultPortSettings=MCatStr(GlobalConfig->DefaultPortSettings, "listen=", CommandLineNext(CMD), " ", NULL);
         else if (strcmp(arg, "-cert")==0) GlobalConfig->DefaultPortSettings=MCatStr(GlobalConfig->DefaultPortSettings, "ssl-cert=", CommandLineNext(CMD), " ", NULL);
@@ -157,31 +160,27 @@ int ConfigInit(int argc, char **argv)
     }
 
     CMD=CommandLineParserCreate(argc, argv);
-    arg=CommandLinePeek(CMD);
+    arg=CommandLineFirst(CMD);
 
     if (arg)
     {
         if ( (strcmp(arg, "adduser")==0) || (strcmp(arg, "useradd")==0))
         {
-            arg=CommandLineNext(CMD); // consume 'useradd' as we 'Peeked' it
             UserAdd(CMD);
             exit(0);
         }
         else if (strcmp(arg, "sign")==0)
         {
-            arg=CommandLineNext(CMD); // consume 'sign' as we 'Peeked' it
             SignStringTerminalUser(CommandLineNext(CMD));
             exit(0);
         }
         else if (strcmp(arg, "register")==0)
         {
-            arg=CommandLineNext(CMD); // consume 'register' as we 'Peeked' it
             MunAuthRegister(CMD);
             exit(0);
         }
         else if (strcmp(arg, "dns-list")==0)
         {
-            arg=CommandLineNext(CMD); // consume 'dns-list' as we 'Peeked' it
             Tempstr=CopyStr(Tempstr, CommandLineNext(CMD));
             Tempstr=DNSListLookupIP(Tempstr, Tempstr, CommandLineNext(CMD));
             printf("%s\n", Tempstr);
@@ -192,7 +191,6 @@ int ConfigInit(int argc, char **argv)
             (strcmp(arg, "extip")==0)
         )
         {
-            arg=CommandLineNext(CMD); // consume 'extip' as we 'Peeked' it
             Tempstr=ExternalIPFromURL(Tempstr, CommandLineNext(CMD));
             printf("%s\n", Tempstr);
             exit(0);
@@ -206,11 +204,11 @@ int ConfigInit(int argc, char **argv)
             PrintHelp();
             exit(0);
         }
-				else if (strcmp(arg, "--help-config")==0)
-				{
+        else if (strcmp(arg, "--help-config")==0)
+        {
             PrintHelpConfig();
             exit(0);
-				}
+        }
         else if
         (
             (strcmp(arg, "-version")==0) ||

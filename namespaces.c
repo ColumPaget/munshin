@@ -14,7 +14,7 @@ char *NetworkNamespaceEnter(char *NamespaceID, const char *NSName, TPortConfig *
     char *Path=NULL;
     int ns_fd=-1;
 
-		if (! StrValid(NSName)) return("");
+    if (! StrValid(NSName)) return("");
 
     if (strncmp(NSName, "pid:", 4)==0)
     {
@@ -22,12 +22,12 @@ char *NetworkNamespaceEnter(char *NamespaceID, const char *NSName, TPortConfig *
         NamespaceID=SetStrLen(NamespaceID, 100);
         readlink(Path, NamespaceID, 100);
     }
-    else if (*NSName=='/') 
-		{
-			Path=CopyStr(Path, NSName);
-			NamespaceID=CopyStr(NamespaceID, NSName);
-		}
-		else
+    else if (*NSName=='/')
+    {
+        Path=CopyStr(Path, NSName);
+        NamespaceID=CopyStr(NamespaceID, NSName);
+    }
+    else
     {
         Path=MCopyStr(Path, "/var/run/netns/", NSName, NULL);
         NamespaceID=CopyStr(NamespaceID, NSName);

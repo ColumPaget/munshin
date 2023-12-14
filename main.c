@@ -19,6 +19,8 @@ int main(int argc, char **argv)
     if (GlobalConfig->Flags & CONFIG_INETD) InetdParse(GlobalConfig->ConfigFile);
     else ConfigFileParse(GlobalConfig->ConfigFile);
 
+     if (GlobalConfig->Flags & CONFIG_BACKGROUND) demonize();
+
     //RegionFilesLoad(GlobalConfig->RegionFiles, 0);
     Services=ServicesSetup(GlobalConfig->PortConfigs);
 

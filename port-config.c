@@ -7,7 +7,7 @@ void ParsePort(const char *Str, int *PortReturn, int *Flags)
     const char *tptr;
     int Port;
 
-    Port=strtol(Str, (char ** restrict) &tptr, 10);
+    Port=strtol(Str, (char **) &tptr, 10);
     if (PortReturn) *PortReturn=Port;
 
     if (Flags)

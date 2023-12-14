@@ -1,11 +1,11 @@
 CC = gcc
 CFLAGS = -g -O2
 LDFLAGS=
-STATIC_LIBS=libUseful-Bundled/libUseful.a
-LIBS = -lcap -lssl -lcrypto -lz 
-FLAGS=$(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -fPIC -DPACKAGE_NAME=\"munshin\" -DPACKAGE_TARNAME=\"munshin\" -DPACKAGE_VERSION=\"1.1\" -DPACKAGE_STRING=\"munshin\ 1.1\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -D_FILE_OFFSET_BITS=64 -DHAVE_LIBZ=1 -DHAVE_LIBCRYPTO=1 -DHAVE_LIBSSL=1 -DHAVE_LIBCAP=1 -DHAVE_PARSE_DURATION=1 -DHAVE_MADVISE -DHAVE_MADVISE_NOFORK -DHAVE_MADVISE_DONTDUMP -DHAVE_MLOCK
+STATIC_LIBS=
+LIBS = -lUseful-5 -lcap -lssl -lcrypto -lz 
+FLAGS=$(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -fPIC -DPACKAGE_NAME=\"munshin\" -DPACKAGE_TARNAME=\"munshin\" -DPACKAGE_VERSION=\"1.1\" -DPACKAGE_STRING=\"munshin\ 1.1\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -D_FILE_OFFSET_BITS=64 -DHAVE_LIBZ=1 -DHAVE_LIBCRYPTO=1 -DHAVE_LIBSSL=1 -DHAVE_LIBCAP=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_LIBUSEFUL_5_LIBUSEFUL_H=1 -DHAVE_LIBUSEFUL_5=1 -DHAVE_PARSE_DURATION=1 -DHAVE_MADVISE -DHAVE_MADVISE_NOFORK -DHAVE_MADVISE_DONTDUMP -DHAVE_MLOCK
 prefix=/usr/local
-OBJ=common.o ip-address.o ip-region.o mapped-files.o dnslist.o signed-string.o external-ip.o munauth.o unix-sock.o port-config.o config.o item-db.o inetd.o service.o rules.o syslog.o process.o socks-proxy.o users.o arp.o namespaces.o connection-confirm.o one-time-password.o http.o http-auth.o web_manager.o help.o libUseful-Bundled/libUseful.a
+OBJ=common.o ip-address.o ip-region.o mapped-files.o dnslist.o signed-string.o external-ip.o munauth.o unix-sock.o port-config.o config.o item-db.o inetd.o service.o rules.o syslog.o process.o socks-proxy.o users.o arp.o namespaces.o connection-confirm.o one-time-password.o http.o http-auth.o web_manager.o help.o 
 
 all: $(OBJ) main.c
 	gcc $(FLAGS) -omunshin main.c $(OBJ) $(LIBS) $(STATIC_LIBS)
@@ -98,4 +98,4 @@ help.o:help.h help.c common.h
 
 
 clean:
-	rm -f *.o */*.o */*.so */*.a
+	rm -f *.o */*.o */*.so */*.a *.orig
